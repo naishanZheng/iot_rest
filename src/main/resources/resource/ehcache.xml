@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
+<diskStore path="java.io"/>
+    <defaultCache
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="120"
+            timeToLiveSeconds="120"
+            overflowToDisk="false"
+            diskPersistent="false"
+            diskExpiryThreadIntervalSeconds="120"
+            />
+    <!--eternal:是否永不过期
+      如果仅有 timeToLiveSeconds 那么 自创建时间开始 间隔x后缓存失效；
+      如果没有timeToLiveSeconds 那么自最后一次访问缓存 间隔y后 缓存失效；
+      保存2小时
+      -->
+    <cache name="userCache"
+           maxElementsInMemory="10000"
+           overflowToDisk="true"
+           eternal="false"
+           timeToLiveSeconds="7200"
+           timeToIdleSeconds="7200"
+           diskPersistent="true"
+           diskExpiryThreadIntervalSeconds="600"/>
+
+    <cache name="commandTemplet"
+           maxElementsInMemory="10000"
+           overflowToDisk="true"
+           eternal="false"
+           timeToLiveSeconds="7200"
+           timeToIdleSeconds="7200"
+           diskPersistent="true"
+           diskExpiryThreadIntervalSeconds="600"/>
+</ehcache>
+
+

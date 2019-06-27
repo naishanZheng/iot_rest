@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iot.device.config.dao.CommandTempletMapper">
+   	 <!-- 设备基本信息 -->
+    <sql id="templetColumns">
+        a.id AS "id",
+        a.key AS "key",
+        a.value AS "value",
+        a.type AS "type",
+        a.configId AS "commandConfigId",
+        a.defaultValue AS "defaultValue"
+    </sql>
+
+    <insert id="save">
+        insert into iot_device_config_command_templet(
+          id,
+          `key`,
+          `value`,
+          `type`,
+          configId,
+          defaultValue
+        )values(
+          #{id},
+          #{key},
+          #{value},
+          #{type},
+          #{commandConfigId},
+          #{defaultValue}
+        )
+    </insert>
+
+    <select id="getByConfigId" resultType="com.iot.device.config.pojo.CommandTemplet">
+      select <include refid="templetColumns"/>
+        from iot_device_config_command_templet a where configId = #{configId}
+    </select>
+
+
+    <update id="update">
+        UPDATE iot_device_config_command_templet set
+        `type` = #{type},
+        `key` = #{key},
+        `value` = #{value},
+        defaultValue = #{defaultValue}
+        where id = #{id}
+    </update>
+    <delete id="delete">
+        delete from iot_device_config_command_templet where id=#{id}
+    </delete>
+</mapper>
+
+
+
+

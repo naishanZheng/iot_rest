@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iot.product.smartTerminal.dao.WarningConfigMapper">
+   	 <!-- 设备基本信息 -->
+     <sql id="warningConfigColumn">
+         a.id AS "id",
+         a.minVoltage AS "minVoltage",
+         a.maxVoltage AS "maxVoltage",
+         a.minPower AS "minPower",
+         a.maxPower AS "maxPower",
+         a.`begin` AS "begin",
+         a.`end` AS "end",
+         a.deviceId AS "deviceId"
+     </sql>
+
+
+    <select id="get" resultType="com.iot.product.smartTerminal.pojo.WarningConfig">
+        select <include refid="warningConfigColumn"/>
+        from iot_product_smartTerminal_warningConfig a
+        <where>
+            <if test='id != null and id != ""'>
+                a.id = #{id}
+            </if>
+            <if test='deviceId != null and deviceId != ""'>
+                a.deviceId = #{deviceId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="save">
+        INSERT INTO iot_product_smartTerminal_warningConfig(
+         id,
+         minVoltage,
+         maxVoltage,
+         minPower,
+         maxPower,
+         `begin`,
+         `end`,
+         deviceId
+        )values (
+          #{id},
+          #{minVoltage},
+          #{maxVoltage},
+          #{minPower},
+          #{maxPower},
+          #{begin},
+          #{end},
+          #{deviceId}
+        )
+    </insert>
+
+    <update id="update">
+        update iot_product_smartTerminal_warningConfig set
+        minVoltage = #{minVoltage},
+        maxVoltage = #{maxVoltage},
+        minPower = #{minPower},
+        maxPower = #{maxPower},
+        `begin` = #{begin},
+        `end` = #{end},
+        `deviceId` = #{deviceId}
+        where id = #{id}
+    </update>
+</mapper>
+
+
+
+

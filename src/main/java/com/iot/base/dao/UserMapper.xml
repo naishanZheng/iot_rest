@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iot.base.dao.UserMapper">
+	<sql id="userFormColumns">
+         a.id  AS "id",
+         a.name  AS "name",
+         a.number AS "number",
+         a.login_name AS "loginName",
+         a.phone AS "phone",
+         a.userType AS "userType",
+         a.login_password  AS "loginPassword",
+         a.loginIp AS "loginIp",
+         a.loginDate AS "loginDate",
+         a.roleIds  AS "roleIds",
+         a.photo AS "photo",
+         a.createTime AS "createTime",
+         a.updateTime AS "updateTime",
+         b.id AS "createBy.id",
+         b.`name` AS "createBy.name",
+         e.id AS "updateBy.id",
+         e.`name` AS "updateBy.name"
+	</sql>
+
+    <sql id="joinColumns">
+        LEFT JOIN iot_base_user b on b.id = a.createBy
+        LEFT JOIN iot_base_user e on e.id = a.updateBy
+    </sql>
+
+    <sql id="userListColumns">
+         a.id AS "id",
+         a.name  AS "name",
+         a.number AS "number",
+         a.login_name AS "loginName",
+         a.userType AS "userType"
+	</sql>
+
+
+
+	<select id="getByPage" resultType="com.iot.base.pojo.User">
+       select
+		   <include refid="userListColumns"/>,(@i:=@i+1) AS "index"
+       from iot_base_user a , (select @i:=#{index})t
+    </select>
+
+    <select id="get" resultType="com.iot.base.pojo.User">
+        select
+        <include refid="userFormColumns"/>
+        from iot_base_user a <include refid="joinColumns"/>
+        where a.id = #{id}
+    </select>
+
+    <insert id="save">
+        insert into iot_base_user(
+          id,
+          `name`,
+          login_name,
+          login_password,
+          userType,
+          roleIds,
+          photo,
+          `number`,
+          createBy,
+          createTime,
+          updateBy,
+          updateTime
+        )values(
+          #{id},
+          #{name },
+          #{loginName},
+          #{loginPassword},
+          #{userType},
+          #{roleIds},
+          #{photo},
+          #{number},
+          #{createBy.id},
+          #{createTime},
+          #{updateBy.id},
+          #{updateTime}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE iot_base_user set
+        `name` = #{name},
+        login_name = #{loginName},
+        login_password = #{loginPassword},
+        userType = #{userType},
+        roleIds = #{roleIds},
+        photo = #{photo},
+        `number` = #{number},
+        updateBy = #{updateBy.id},
+        updateTime = #{updateTime}
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+        delete from iot_base_user where id = #{id}
+    </delete>
+</mapper>
+
+
+
+

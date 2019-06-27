@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iot.device.manager.dao.DeviceManagerMapper">
+   	 <!-- 设备基本信息 -->
+	<sql id="deviceColumns">
+         a.id AS "id",
+         a.devSerial AS "devSerial",
+         a.name  AS "name",
+         a.serviceManName AS "serviceManName",
+         a.servicePhone AS "servicePhone",
+         a.lastMessageTime AS "lastMessageTime",
+         a.location AS "location",
+         a.longitude AS "longitude",
+         a.latitude AS "latitude",
+         a.connectPointId AS "connectPointId",
+         a.createTime AS "createTime",
+         a.updateTime AS "updateTime",
+         a.serviceMode AS "serviceMode",
+         b.id AS "updateBy.id",
+         b.name AS "updateBy.name",
+         f.id AS "createBy.id",
+         f.name AS "createBy.name",
+         d.id AS "deviceType.id",
+         d.name AS "deviceType.name",
+         d.ename AS "deviceType.ename",
+         a.status AS "status"
+	</sql>
+
+   <sql id="joinColumns">
+       LEFT JOIN iot_base_user b on b.id = a.updateBy
+       LEFT JOIN iot_base_user f on f.id = a.createBy
+       LEFT JOIN iot_device_type d on d.id = deviceTypeId
+   </sql>
+
+
+    <select id="getByPage" resultType="com.iot.device.manager.pojo.Device">
+        select
+        <include refid="deviceColumns"/>
+        from iot_device a
+        <include refid="joinColumns"/>
+        <where>
+            1=1
+            <if test='deviceType != null and deviceType.id != null and deviceType.id != ""'>
+                and  a.deviceTypeId = #{deviceType.id}
+            </if>
+            <if test='location != null and  location != ""'>
+                and   a.location LIKE CONCAT('%',#{location},'%')
+            </if>
+            <if test='name != null and name != ""'>
+                and  a.name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test='devSerial != null and devSerial != ""'>
+                and  a.devSerial LIKE CONCAT('%',#{devSerial},'%')
+            </if>
+            <if test='status != null'>
+                and  a.status = #{status}
+            </if>
+        </where>
+        ORDER BY a.status desc
+    </select>
+
+  <!--  <select id="getDeviceBaseInfo" resultType="com.iot.device.pojo.Device">&lt;!&ndash;这里以后要有针对地查了 &ndash;&gt;
+        select
+        <include refid="deviceColumns"/>
+        from device a
+        <include refid="deviceJoin"/>
+        where a.devSerial = #{devSerial}
+    </select>
+
+    <select id="getDeviceDetails_warningsInfo" resultType="com.iot.warningInfo.pojo.WarningInfo">
+	   select warningInfoId , warning_key , warning_msg , warning_time from warninginfo
+	          where devSerial = #{devSerial} ORDER BY warning_time DESC limit #{count}
+    </select>-->
+
+    <select id="getInlineCount" resultType="java.lang.Integer">
+        <![CDATA[
+        select count(id) from iot_device where
+        lastMessageTime > #{lastMessageTime}
+        and lastMessageTime is not null
+         ]]>
+    </select>
+
+    <select id="getOffLineCount" resultType="java.lang.Integer">
+         <![CDATA[
+        select count(id) from iot_device where
+        lastMessageTime < #{lastMessageTime}
+        or lastMessageTime is null
+         ]]>
+    </select>
+
+    <select id="get" resultType="com.iot.device.manager.pojo.Device">
+        select <include refid="deviceColumns" />
+        from iot_device a  <include refid="joinColumns"/>
+        where a.id = #{id}
+    </select>
+
+    <insert id="save">
+        insert into iot_device(
+         id,
+         `name`,
+         `devSerial`,
+         `serviceMode`,
+         `connectPointId`,
+         location,
+         longitude,
+         latitude,
+         deviceTypeId,
+         createBy,
+         createTime,
+         updateBy,
+         updateTime
+        )values(
+          #{id},
+          #{name},
+          #{devSerial},
+          #{serviceMode},
+          #{connectPointId},
+          #{location},
+          #{longitude},
+          #{latitude},
+          #{deviceType.id},
+          #{createBy.id},
+          #{createTime},
+          #{updateBy.id},
+          #{updateTime}
+        )
+    </insert>
+
+    <update id="update">
+        update iot_device set
+        `name` = #{name},
+        devSerial = #{devSerial},
+        serviceMode = #{serviceMode},
+        connectPointId = #{connectPointId},
+        location = #{location},
+        longitude = #{longitude},
+        latitude = #{latitude},
+        deviceTypeId =  #{deviceType.id},
+        updateBy = #{updateBy.id},
+        updateTime = #{updateTime}
+        where id = #{id}
+    </update>
+
+    <update id="updateStatus">
+         update iot_device set
+        status = #{status}
+        where id = #{id}
+    </update>
+</mapper>
+
+
+
+

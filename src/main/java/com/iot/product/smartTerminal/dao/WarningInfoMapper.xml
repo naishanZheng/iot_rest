@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iot.product.smartTerminal.dao.WarningInfoMapper">
+   	 <!-- 设备基本信息 -->
+    <select id="getByPage" resultType="com.iot.product.smartTerminal.pojo.WarningInfo">
+        select warningInfoId , warning_key , warning_msg , warning_time from warninginfo
+	          where devSerial = #{devSerial} ORDER BY warning_time DESC
+    </select>
+</mapper>
+
+
+
+

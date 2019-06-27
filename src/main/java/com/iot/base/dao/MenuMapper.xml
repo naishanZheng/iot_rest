@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iot.base.dao.MenuMapper">
+   	 <!-- 设备基本信息 -->
+	<sql id="menuColumns">
+         a.id  AS "id",
+         a.parentId AS "parentId",
+         a.name  AS "name",
+         a.href AS "href",
+         a.target AS "target",
+         a.icon AS "icon",
+         a.sort AS "sort",
+         a.isShow AS "isShow",
+         a.permission AS "permission"
+	</sql>
+
+    <sql id="Role_Menu_Columns">
+         a.`name`  AS "title",
+         a.id  AS "value"
+	</sql>
+
+	<select id="getAllEnums" resultType="com.iot.base.pojo.Menu">
+       select
+		   <include refid="menuColumns"/>
+       from iot_base_menu a
+	</select>
+
+    <select id="get" resultType="com.iot.base.pojo.Menu">
+        select
+        <include refid="menuColumns"/>
+        from iot_base_menu a
+        where id = #{id}
+    </select>
+
+    <select id="getByParentId" resultType="com.iot.base.pojo.Role_Menu">
+        select <include refid="Role_Menu_Columns"/>
+        <if test='role != null and role.menuIds != "" and role.menuIds != null'>
+            ,(CASE WHEN a.id in (${role.menuIds}) THEN 1 ELSE 0 END) AS "checked"
+        </if>
+        from iot_base_menu a
+        where a.parentId = #{parentId} ORDER BY a.sort
+    </select>
+
+    <select id="getByParent" resultType="com.iot.base.pojo.Menu">
+        select <include refid="menuColumns"/>
+        from iot_base_menu a
+        where parentId = #{parentId}
+    </select>
+    <sql id="getMenuIds">
+        select menuIds from iot_base_role where id = #{role.id}
+    </sql>
+
+
+    <insert id="save">
+        insert into iot_base_menu(
+          id,
+          `name`,
+          href,
+          target,
+          icon,
+          sort,
+          isShow,
+          permission,
+          parentId
+        )values(
+          #{id},
+          #{name },
+          #{href},
+          #{target},
+          #{icon},
+          #{sort},
+          #{isShow},
+          #{permission},
+          #{parentId}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE iot_base_menu set
+        `name` = #{name},
+        parentId = #{parentId},
+        href = #{href},
+        icon = #{icon},
+        sort = #{sort},
+        isShow = #{isShow},
+        `permission` = #{permission}
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+        delete from iot_base_menu where id = #{id}
+    </delete>
+</mapper>
+
+
+
+

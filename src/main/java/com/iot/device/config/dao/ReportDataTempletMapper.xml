@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iot.device.config.dao.ReportDataTempletMapper">
+   	 <!-- 设备基本信息 -->
+    <sql id="templetColumns">
+        a.id AS "id",
+        a.k AS "k",
+        a.v AS "v",
+        a.type AS "type",
+        a.parentId AS "parentId",
+        a.reportDataConfigId AS "reportDataConfigId"
+    </sql>
+
+    <insert id="save">
+        insert into iot_device_config_reportdata_templet(
+          id,
+          k,
+          v,
+          parentId,
+          `type`,
+          reportDataConfigId
+        )values(
+          #{id},
+          #{k},
+          #{v},
+          #{parentId},
+          #{type},
+          #{reportDataConfigId}
+        )
+    </insert>
+
+    <select id="getByConfigId" resultType="com.iot.device.config.pojo.ReportDataTemplet">
+      select <include refid="templetColumns"/>
+        from iot_device_config_reportdata_templet a where reportDataConfigId = #{configId}
+    </select>
+
+
+    <update id="update">
+        UPDATE iot_device_config_reportdata_templet set
+        `type` = #{type},
+        k = #{k},
+        v = #{v},
+        parentId = #{parentId},
+        reportDataConfigId = #{reportDataConfigId}
+        where id = #{id}
+    </update>
+    <delete id="delete">
+        delete from iot_device_config_reportdata_templet where id=#{id}
+    </delete>
+</mapper>
+
+
+
+

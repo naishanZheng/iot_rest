@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iot.device.manager.dao.DeviceCommandMapper">
+   	 <!-- 设备基本信息 -->
+	<sql id="reportDataColumns">
+       a.id AS  "id",
+       a.lastMessageTime AS "lastMessageTime",
+       a.serviceData AS "serviceData",
+       a.devSerial AS "devSerial"
+	</sql>
+
+
+    <insert id="save">
+        insert into iot_device_command(
+         id,
+         devSerial,
+         params,
+         createBy,
+         createTime,
+         status
+        )values (
+          #{id},
+          #{devSerial},
+          #{params},
+          #{createBy.id},
+          #{createTime},
+          #{status}
+        )
+    </insert>
+
+    <select id="getByCount" resultType="com.iot.device.manager.pojo.DeviceCommand">
+      select
+           a.devSerial AS "devSerial" , b.createTime AS "createTime",  b.status AS "status",
+           b.params AS "params",c.id AS "createBy.id",c.name AS "createBy.name"
+           from iot_device a
+      INNER JOIN iot_device_command b on b.devSerial = a.devSerial
+      LEFT JOIN iot_base_user c on c.id = b.createBy
+      where a.id = #{id} ORDER BY b.createTime desc LIMIT #{limit}
+    </select>
+</mapper>
+
+
+
+

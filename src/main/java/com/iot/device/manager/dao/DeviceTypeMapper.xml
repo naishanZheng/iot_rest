@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iot.device.manager.dao.DeviceTypeMapper">
+   	 <!-- 设备基本信息 -->
+	<sql id="deviceTypeColumns">
+       a.id AS  "id",
+       a.`name` AS "name",
+       a.ename AS "ename",
+       a.createTime AS "createTime",
+       a.updateTime AS "updateTime",
+       b.id AS "reportDataConfig.id",
+       b.`name` AS "reportDataConfig.name",
+       e.id AS "createBy.id",
+       e.`name` AS "createBy.name",
+       d.id AS "updateBy.id",
+       d.`name` AS "updateBy.name",
+       f.id AS "commandConfig.id",
+       f.name AS "commandConfig.name"
+	</sql>
+
+
+    <sql id="joinColumns">
+        LEFT JOIN iot_device_config_reportdata_config b on b.id = a.reportDataConfigId
+        LEFT JOIN iot_base_user e on e.id = a.createBy
+        LEFT JOIN iot_base_user d on d.id = a.updateBy
+        LEFT JOIN iot_device_config_command_config f on f.id = a.reportCommandConfigId
+    </sql>
+
+    <select id="get" resultType="com.iot.device.manager.pojo.DeviceType">
+      select <include refid="deviceTypeColumns"/>
+          from iot_device_type a
+        <include refid="joinColumns"/>
+        where a.id = #{id}
+    </select>
+
+    <select id="getAll" resultType="com.iot.device.manager.pojo.DeviceType">
+        select a.id,a.name from iot_device_type a
+    </select>
+
+    <select id="getByPage" resultType="com.iot.device.manager.pojo.DeviceType">
+        select <include refid="deviceTypeColumns"/>
+        from iot_device_type a
+        <include refid="joinColumns"/>
+    </select>
+
+    <select id="getTypeWithCount" resultType="com.iot.device.reportForm.pojo.DeviceTypeCount">
+    SELECT
+	  count(a.deviceTypeId) AS `count`,b.`name`
+    FROM
+	   iot_device a
+    LEFT JOIN iot_device_type b ON b.id = a.deviceTypeId group by b.id
+    </select>
+    <select id="getByDevSerial" resultType="com.iot.device.manager.pojo.DeviceType">
+        select a.id AS "id",a.name AS "name",a.ename AS "ename"
+        from iot_device_type a LEFT JOIN iot_device b on b.deviceTypeId = a.id
+        where b.devSerial = #{devSerial}
+    </select>
+    <update id="update">
+        update iot_device_type set
+        `name` = #{name},
+        ename = #{ename},
+        createBy = #{createBy.id},
+        createTime = #{createTime},
+        updateBy = #{updateBy.id},
+        updateTime = #{updateTime},
+        reportDataConfigId = #{reportDataConfig.id},
+        reportCommandConfigId = #{commandConfig.id}
+        where id = #{id}
+    </update>
+
+    <insert id="save">
+        insert into iot_device_type(
+        id,
+        `name`,
+        `ename`,
+        createBy,
+        createTime,
+        updateBy,
+        updateTime,
+        reportDataConfigId,
+        reportCommandConfigId
+        )values(
+         #{id},
+         #{name},
+         #{ename},
+         #{createBy.id},
+         #{createTime},
+         #{updateBy.id},
+         #{updateTime},
+         #{reportDataConfig.id},
+         #{commandConfig.id}
+        )
+    </insert>
+
+    <delete id="delete">
+        delete from iot_device_type where id = #{id}
+    </delete>
+</mapper>
+
+
+
+

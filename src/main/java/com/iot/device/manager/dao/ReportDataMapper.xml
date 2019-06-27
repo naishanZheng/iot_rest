@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iot.device.manager.dao.ReportDataMapper">
+   	 <!-- 设备基本信息 -->
+	<sql id="reportDataColumns">
+       a.id AS  "id",
+       a.lastMessageTime AS "lastMessageTime",
+       a.serviceData AS "serviceData",
+       a.devSerial AS "devSerial"
+	</sql>
+
+
+    <select id="get" resultType="com.iot.device.manager.pojo.ReportData">
+
+    </select>
+
+    <select id="getByPage" resultType="com.iot.device.manager.pojo.ReportData">
+        select <include refid="reportDataColumns"/>
+        from iot_device_reportdata a where devSerial = #{devSerial}
+        order by lastMessageTime desc
+    </select>
+
+   <delete id="deleteReportDataBeforeLastMessageTime">
+       <![CDATA[
+          delete from iot_device_reportdata where lastMessageTime < #{lastMessageTime}
+       ]]>
+   </delete>
+</mapper>
+
+
+
+

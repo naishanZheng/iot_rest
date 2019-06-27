@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iot.device.config.dao.ReportDataConfigMapper">
+   	 <!-- 设备基本信息 -->
+    <insert id="save">
+        insert into iot_device_config_reportdata_config(
+          id,
+          `name`
+        )values(
+          #{id},
+          #{name }
+        )
+    </insert>
+
+    <select id="getByPage" resultType="com.iot.device.config.pojo.ReportDataConfig">
+        select
+        a.id AS "id" , a.name AS "name"
+        from iot_device_config_reportdata_config a
+    </select>
+
+    <select id="getAll" resultType="com.iot.device.config.pojo.ReportDataConfig">
+        select
+        a.id AS "id" , a.name AS "name"
+        from iot_device_config_reportdata_config a
+    </select>
+
+    <select id="get" resultType="com.iot.device.config.pojo.ReportDataConfig">
+       select id AS "id",name AS "name"
+        from iot_device_config_reportdata_config a
+        where a.id = #{id}
+    </select>
+    <update id="update">
+      update iot_device_config_reportdata_config set name=#{name} where id = #{id}
+    </update>
+
+    <delete id="delete">
+        delete from iot_device_config_reportdata_config where id = #{id}
+    </delete>
+</mapper>
+
+
+
+

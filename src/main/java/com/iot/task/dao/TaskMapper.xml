@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iot.task.dao.TaskMapper">
+   	 <!-- 设备基本信息 -->
+	<sql id="taskColumns">
+       a.id AS  "id",
+       a.`name` AS "name",
+       a.createTime AS "createTime",
+       a.updateTime AS "updateTime",
+       a.objectName AS "objectName",
+       a.taskConfig AS "taskConfig",
+       a.status AS "status",
+       a.remarks AS "remarks",
+       b.id AS "updateBy.id",
+       b.name AS "updateBy.name",
+       e.id AS "createBy.id",
+       e.name AS "createBy.name"
+	</sql>
+
+   <sql id="joinColumns">
+       LEFT JOIN iot_base_user b on b.id = a.updateBy
+       LEFT JOIN iot_base_user e on e.id = a.createBy
+   </sql>
+
+    <select id="getByPage" resultType="com.iot.task.pojo.Task">
+        select <include refid="taskColumns"/>
+        from iot_task a
+        <include refid="joinColumns"/>
+    </select>
+
+    <select id="get" resultType="com.iot.task.pojo.Task">
+        select <include refid="taskColumns"/>
+        from iot_task a  <include refid="joinColumns"/>
+        where a.id = #{id}
+    </select>
+
+    <update id="update">
+        update iot_task set
+        `name` = #{name},
+        objectName = #{objectName},
+        taskConfig = #{taskConfig},
+        remarks = #{remarks},
+        updateBy = #{updateBy.id},
+        updateTime = #{updateTime}
+        where id = #{id}
+    </update>
+
+    <insert id="save">
+        insert into iot_task(
+         id,
+         `name`,
+         objectName,
+         taskConfig,
+         createBy,
+         createTime,
+         updateBy,
+         updateTime,
+         remarks
+        )values (
+         #{id},
+         #{name},
+         #{objectName},
+         #{taskConfig},
+         #{createBy.id},
+         #{createTime},
+         #{updateBy.id},
+         #{updateTime},
+         #{remarks}
+        )
+    </insert>
+
+    <select id="getAll" resultType="com.iot.task.pojo.Task">
+       select <include refid="taskColumns"/>
+        from iot_task a <include refid="joinColumns"/>
+        <where>
+            <if test='status != null and status != ""'>
+               a.status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <delete id="delete">
+        delete from iot_task where id = #{id}
+    </delete>
+
+    <update id="updateStatus">
+        update iot_task
+        set status = #{status}
+        where id = #{id}
+    </update>
+</mapper>
+
+
+
+
